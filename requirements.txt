@@ -1,0 +1,18 @@
+# 核心依赖
+python>=3.8
+pyyaml>=6.0
+pandas>=1.5.0
+numpy>=1.24.0
+
+# 邮件相关
+secure-smtplib>=0.1.1
+python-dotenv>=1.0.0  # 用于环境变量管理
+
+# 数据格式
+openpyxl>=3.1.0  # 用于Excel支持
+pyarrow>=12.0.0  # 用于Parquet格式
+
+# 日志和工具
+colorlog>=6.7.0  # 彩色日志
+tqdm>=4.65.0     # 进度条
+

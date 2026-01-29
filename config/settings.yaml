@@ -1,0 +1,67 @@
+# 网络流量监控系统配置
+version: 1.0
+
+# 路径配置
+paths:
+  log_dir: "~/audit/bandwhich/log"
+  report_dir: "~/audit/bandwhich/reports"
+  archive_dir: "~/audit/bandwhich/archive"
+  temp_dir: "./temp"
+
+# 邮件配置
+email:
+  smtp_server: "smtp.139.com"
+  smtp_port: 25
+  use_ssl: false
+  use_tls: true
+  username: "your_username@139.com"
+  password: "your_password"  # 建议使用环境变量
+  from_addr: "your_username@139.com"
+  to_addrs:
+    - "deng.ke@139.com"
+    - "backup@example.com"  # 可选备份地址
+  cc_addrs: []  # 抄送地址
+  subject_prefix: "网络流量监控报告"
+
+# 处理配置
+processing:
+  max_workers: 4  # 并发工作线程数
+  batch_size: 1000  # 每批处理记录数
+  chunk_size: 8192  # 文件读取块大小
+  keep_temp_files: false  # 是否保留临时文件
+
+# 报告配置
+reports:
+  format: "json"  # 主报告格式 (json/csv/parquet)
+  include_csv: true  # 是否同时生成CSV格式
+  compress_reports: true  # 是否压缩报告
+  generate_summary: true  # 是否生成汇总报告
+  include_charts: false  # 是否包含图表（未来扩展）
+
+# 存档配置
+archive:
+  enabled: true
+  compress_format: "zip"  # zip/tar.gz
+  keep_original: false  # 存档后是否保留原文件
+  retention_days: 30  # 存档保留天数
+  clean_old_archives: true  # 是否清理旧存档
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_size: "10MB"
+  backup_count: 5
+  enable_console: true
+
+# 分析配置（未来扩展）
+analysis:
+  time_windows:  # 时间窗口分析
+    - "hourly"
+    - "daily"
+    - "weekly"
+  metrics:  # 要计算的指标
+    - "total_traffic"
+    - "top_processes"
+    - "top_remote_addresses"
+    - "connection_patterns"

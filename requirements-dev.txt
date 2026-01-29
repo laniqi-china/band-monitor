@@ -1,0 +1,27 @@
+# 测试依赖
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-xdist>=3.0.0
+pytest-mock>=3.10.0
+pytest-asyncio>=0.20.0
+pytest-html>=3.2.0
+pytest-rerunfailures>=11.0
+pytest-timeout>=2.1.0
+
+# 性能测试
+psutil>=5.9.0
+memory-profiler>=0.60.0
+
+# HTTP测试
+pytest-httpx>=0.24.0
+vcrpy>=4.3.0
+requests-mock>=1.10.0
+
+# 文档测试
+sphinx>=6.0.0
+sphinx-rtd-theme>=1.2.0
+
+# 其他工具
+coverage>=7.0.0
+tox>=4.0.0
+pre-commit>=3.0.0

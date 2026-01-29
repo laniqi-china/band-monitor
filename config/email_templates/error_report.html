@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: #f8d7da; color: #721c24; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .error-details { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .error-stack { font-family: monospace; font-size: 12px; white-space: pre-wrap; background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #dee2e6; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❌ 网络监控系统错误报告</h1>
+            <p>发生时间: {{timestamp}}</p>
+        </div>
+
+        <div class="section">
+            <h2>错误摘要</h2>
+            <div class="error-details">
+                <p><strong>错误类型:</strong> {{error_type}}</p>
+                <p><strong>错误信息:</strong> {{error_message}}</p>
+                <p><strong>发生模块:</strong> {{module}}</p>
+                <p><strong>影响日期:</strong> {{affected_dates|join(', ') if affected_dates else '未知'}}</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>错误详情</h2>
+            <div class="error-stack">{{error_traceback}}</div>
+        </div>
+
+        <div class="section">
+            <h2>系统状态</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>运行时间</strong></td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">{{uptime}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>内存使用</strong></td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">{{memory_usage}}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;"><strong>磁盘空间</strong></td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">{{disk_space}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>建议操作</h2>
+            <ul>
+                <li>检查日志文件以获取更多信息</li>
+                <li>验证配置文件是否正确</li>
+                <li>确保磁盘空间充足</li>
+                <li>检查网络连接状态</li>
+                <li>联系系统管理员进行进一步诊断</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; color: #6c757d; font-size: 12px;">
+            <p>这是自动生成的错误报告，请及时处理。</p>
+            <p>© 2025 网络监控系统 | 版本: 1.0.0</p>
+        </div>
+    </div>
+</body>
+</html>
