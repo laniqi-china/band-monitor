@@ -68,7 +68,7 @@ class TestEmailSender:
 
         # 验证正文
         assert msg.get_content_type() == "text/plain"
-        assert msg.get_payload() == "测试正文"
+        assert msg.get_payload(decode=True).decode("utf-8") == "测试正文"
 
     def test_create_message_html(self, email_sender):
         """测试创建HTML邮件"""
@@ -79,7 +79,8 @@ class TestEmailSender:
         msg = email_sender._create_message(subject, body, content_type)
 
         assert msg.get_content_type() == "text/html"
-        assert "<h1>HTML正文</h1>" in msg.get_payload()
+        payload = msg.get_payload(decode=True).decode("utf-8")
+        assert "<h1>HTML正文</h1>" in payload
 
     def test_create_message_with_attachments(self, email_sender, sample_attachments):
         """测试创建带附件的邮件"""
@@ -93,9 +94,9 @@ class TestEmailSender:
         # 应该是multipart消息
         assert msg.is_multipart()
 
-        # 计算部分数量（1个正文 + N个附件）
+        # 计算部分数量（multipart容器 + 正文 + N个附件）
         parts = list(msg.walk())
-        assert len(parts) == 3  # multipart容器 + 正文 + 2个附件
+        assert len(parts) == 4  # multipart容器 + 正文 + 2个附件
 
         # 验证附件
         attachment_filenames = []
@@ -140,16 +141,13 @@ class TestEmailSender:
         # 验证发送成功
         assert success is True
 
-        # 验证SMTP调用
-        mock_smtp_server.assert_called_once()
-
         # 验证服务器连接
-        mock_smtp_server.return_value.starttls.assert_called_once()
-        mock_smtp_server.return_value.login.assert_called_once_with(
+        mock_smtp_server.starttls.assert_called_once()
+        mock_smtp_server.login.assert_called_once_with(
             "test@test.com", "test_password"
         )
-        mock_smtp_server.return_value.send_message.assert_called_once()
-        mock_smtp_server.return_value.quit.assert_called_once()
+        mock_smtp_server.send_message.assert_called_once()
+        mock_smtp_server.quit.assert_called_once()
 
     def test_send_email_with_ssl(self, email_config):
         """测试使用SSL发送邮件"""
@@ -231,10 +229,10 @@ class TestEmailSender:
         assert success is True
 
         # 验证邮件发送
-        mock_smtp_server.return_value.send_message.assert_called_once()
+        mock_smtp_server.send_message.assert_called_once()
 
         # 获取发送的消息
-        call_args = mock_smtp_server.return_value.send_message.call_args
+        call_args = mock_smtp_server.send_message.call_args
         sent_msg = call_args[0][0]  # 第一个位置参数
 
         # 验证邮件主题

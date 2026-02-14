@@ -33,7 +33,7 @@ class ReportGenerator:
         df = pd.DataFrame([asdict(r) for r in records])
         
         # 保存详细报告（JSON格式）
-        report_files = self._save_detailed_report(date_str, df)
+        report_files = self._save_detailed_report(date_str, df, include_csv)
         
         # 生成汇总报告
         summary_files = self._generate_summary_report(date_str, df)
@@ -52,20 +52,21 @@ class ReportGenerator:
         logger.info(f"日期 {date_str} 报告生成完成")
         return all_files
     
-    def _save_detailed_report(self, date_str: str, df: pd.DataFrame) -> Dict[str, Path]:
+    def _save_detailed_report(self, date_str: str, df: pd.DataFrame, include_csv: bool = True) -> Dict[str, Path]:
         """保存详细报告"""
         report_files = {}
-        
+
         # JSON格式（主格式）
         json_file = self.output_dir / f"report_{date_str}.json"
         df.to_json(json_file, orient='records', indent=2, date_format='iso')
         report_files['json'] = json_file
-        
+
         # CSV格式（可选）
-        csv_file = self.output_dir / f"report_{date_str}.csv"
-        df.to_csv(csv_file, index=False, encoding='utf-8')
-        report_files['csv'] = csv_file
-        
+        if include_csv:
+            csv_file = self.output_dir / f"report_{date_str}.csv"
+            df.to_csv(csv_file, index=False, encoding='utf-8')
+            report_files['csv'] = csv_file
+
         # Parquet格式（可选，更高效）
         try:
             parquet_file = self.output_dir / f"report_{date_str}.parquet"
@@ -73,7 +74,7 @@ class ReportGenerator:
             report_files['parquet'] = parquet_file
         except Exception as e:
             logger.warning(f"无法保存Parquet格式: {e}")
-        
+
         return report_files
     
     def _generate_summary_report(self, date_str: str, df: pd.DataFrame) -> Dict[str, Path]:
@@ -110,7 +111,7 @@ class ReportGenerator:
             },
             'process_summary': process_summary.to_dict(orient='records'),
             'remote_summary': remote_summary.to_dict(orient='records'),
-            'time_summary': time_summary.to_dict(),
+            'time_summary': time_summary,
             'top_items': {
                 'top_processes_by_upload': self._get_top_items(df, 'process_name', 'upload_bps', 10),
                 'top_processes_by_download': self._get_top_items(df, 'process_name', 'download_bps', 10),
@@ -239,8 +240,15 @@ class ReportGenerator:
     def _is_ip_address(self, address: str) -> bool:
         """检查是否为IP地址"""
         import re
-        ip_pattern = r'^\d{1,3}(\.\d{1,3}){3}$'
-        return bool(re.match(ip_pattern, address))
+        ip_pattern = r'^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$'
+        match = re.match(ip_pattern, address)
+        if not match:
+            return False
+        # 验证每个数字是否在 0-255 范围内
+        for i in range(1, 5):
+            if int(match.group(i)) > 255:
+                return False
+        return True
     
     def _generate_statistics_report(self, date_str: str, df: pd.DataFrame) -> Dict[str, Path]:
         """生成统计报告"""

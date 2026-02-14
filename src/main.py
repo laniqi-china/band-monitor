@@ -8,6 +8,8 @@ import argparse
 from pathlib import Path
 import logging
 from typing import List, Dict, Any
+from datetime import datetime, timedelta
+import re
 
 # 添加src目录到Python路径
 src_dir = Path(__file__).parent
@@ -173,8 +175,6 @@ class NetworkMonitor:
     
     def _filter_dates(self, date_files: Dict, date_filter: str) -> Dict:
         """过滤日期"""
-        from datetime import datetime
-        
         filtered = {}
         
         for date_key, files in date_files.items():
@@ -196,8 +196,8 @@ class NetworkMonitor:
                 month_ago = datetime.now().date() - timedelta(days=30)
                 if date_key >= month_ago:
                     filtered[date_key] = files
-            elif date_filter in date_str:
-                # 部分匹配
+            elif re.search(date_filter, date_str):
+                # 正则匹配
                 filtered[date_key] = files
         
         return filtered

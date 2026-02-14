@@ -197,16 +197,16 @@ class TrafficValidator(Validator):
         # 验证远程地址
         if 'remote_address' in record:
             addr = record['remote_address']
-            if not (cls.validate_ip(addr) or cls.validate_domain(addr)):
+            if not (TrafficValidator.validate_ip(addr) or TrafficValidator.validate_domain(addr)):
                 errors.append(f"远程地址格式无效: {addr}")
-        
+
         # 验证端口
         if 'remote_port' in record:
-            if not cls.validate_port(record['remote_port']):
+            if not TrafficValidator.validate_port(record['remote_port']):
                 errors.append(f"远程端口无效: {record['remote_port']}")
-        
+
         if 'local_port' in record:
-            if not cls.validate_port(record['local_port']):
+            if not TrafficValidator.validate_port(record['local_port']):
                 errors.append(f"本地端口无效: {record['local_port']}")
         
         return errors
